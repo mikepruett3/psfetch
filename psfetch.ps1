@@ -16,6 +16,53 @@
 # -----------------------------------------------------------
 #
 
+param (
+    [string]$Path
+)
+
+if ( $psboundparameters.Count -eq 0 ) {
+    Write-Host "Not taking screenshot, just displaying information..."
+    Write-Host ""
+}
+
+if ( $Path -And !( Test-Path -path $Path) ) {
+    Write-Host "Path cannot be found..."
+    Write-Host ""
+    break
+}
+
+# DONE: Function to Take the Screenshot
+Function Take-Screenshot {
+    [CmdletBinding()]
+        Param(
+            [string]$Width,
+            [string]$Height,
+            [string]$TarPath
+        )
+
+    PROCESS {
+        [Reflection.Assembly]::LoadWithPartialName("System.Drawing") > $Null
+        $bounds = [Drawing.Rectangle]::FromLTRB(0, 0, $Width, $Height )
+
+        # Check Path for Trailing BackSlashes
+        if ( $TarPath.EndsWith("\") ) {
+            $TarPath = $TarPath.Substring(0,$Path.Length-1)
+        }
+
+        # Define The Target Path
+        $stamp = get-date -f MM-dd-yyyy_HH_mm_ss
+        $target = "$TarPath\screenshot-$stamp.png"
+
+        # Take the Screenshot
+        $bmp = New-Object Drawing.Bitmap $bounds.width, $bounds.height
+        $graphics = [Drawing.Graphics]::FromImage($bmp)
+        $graphics.CopyFromScreen($bounds.Location, [Drawing.Point]::Empty, $bounds.size)
+        $bmp.Save($target)
+        $graphics.Dispose()
+        $bmp.Dispose()
+    }
+}
+
 $USERNAME = [Environment]::USERNAME
 $WORKSTATION = $Env:COMPUTERNAME
 $OS = (Get-WmiObject -class Win32_OperatingSystem).Caption
@@ -45,6 +92,16 @@ $RESOLUTION = "$ScreenWidth x $ScreenHeight"
 # Clear Screen before displaying information
 Clear-Host
 
+# DONE: Add Countdown Timer
+Write-Host "...3" -nonewline;
+Start-Sleep -s 1
+Write-Host "...2" -nonewline;
+Start-Sleep -s 1
+Write-Host "...1" -nonewline;
+Start-Sleep -m 500
+Write-Host "    Cheese!"
+
+# Write-Host all of the collected information, including a Windows Logo in Ansi
 Write-Host "`n"
 Write-Host '        ,.=:!!t3Z3z.,               ' -foregroundcolor "red"
 
@@ -111,3 +168,9 @@ Write-Host '                 ' -foregroundcolor "blue" -nonewline;
 Write-Host '"VEzjt:;;z>*`      ' -foregroundcolor "yellow"
 
 Write-Host "`n"
+
+# Take Screenshot if the Parameters are assigned...
+if ( $Path ) {
+    Take-Screenshot -Width $ScreenWidth -Height $ScreenHeight -TarPath $Path
+}
+
