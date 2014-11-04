@@ -1,15 +1,14 @@
 # PSFetch.ps1
-***
 
 ## What is PSFetch?
-***
+
 A popular implementation of the Bash Screenshot System Information Utility (screenFetch), built in PowerShell.
 
 Similar (in vein) to both [WinScreeny](https://github.com/Nijikokun/WinScreeny) and [CMDfetch](https://github.com/hal-ullr/cmdfetch)
 without the dependencies of LUA or a different command shell. This script is 100% written in PowerShell.
 
 ## Instructions
-***
+
 Clone the repository into a folder under your profile.
 
     cd %UserProfile%
@@ -26,7 +25,6 @@ After that, make sure that your PowerShell Environment - **Execution Policy** is
     PS > Set-ExecutionPolicy Unrestricted
 
 ## Usage
-***
 
 Once the script is somewhere in your path, you can execute it from any directory using the following...
 
