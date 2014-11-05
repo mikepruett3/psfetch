@@ -7,6 +7,10 @@ A popular implementation of the Bash Screenshot System Information Utility (scre
 Similar (in vein) to both [WinScreeny](https://github.com/Nijikokun/WinScreeny) and [CMDfetch](https://github.com/hal-ullr/cmdfetch)
 without the dependencies of LUA or a different command shell. This script is 100% written in PowerShell.
 
+
+![psfetch](http://i.imgur.com/EImqg5p.png)
+
+
 ## Instructions
 
 Clone the repository into a folder under your profile.

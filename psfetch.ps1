@@ -84,9 +84,26 @@ $MEM = "$MEMFREE MB out of $MEMTOTAL MB available"
 
 $UPTIME = (Get-CimInstance -ClassName win32_operatingsystem).LastBootuptime 
 
-# TODO: Fix support for Multiple Monitors
-$ScreenWidth = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenWidth
-$ScreenHeight = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenHeight
+# DONE: Fix support for Multiple Monitors
+# FROM: Shay Levy's Response - http://stackoverflow.com/questions/7967699/get-screen-resolution-using-wmi-powershell-in-windows-7
+$ScreenWidth = 0
+$ScreenHeight = 0
+Add-Type -AssemblyName System.Windows.Forms
+$DisplayCount = [System.Windows.Forms.Screen]::AllScreens.Bounds.Count
+$Bounds = [System.Windows.Forms.Screen]::AllScreens | Select-Object Bounds
+ForEach ( $_ in $Bounds ) {
+    $CurrentDisplayWidth = ( $_ -split "Width=" )[1].substring(0,4)
+    $ScreenWidth = $ScreenWidth + $CurrentDisplayWidth
+    $CurrentDisplayHeight = ( $_ -split "Height=" )[1].substring(0,4)
+    If ( $ScreenHeight -ne $CurrentDisplayHeight ) {
+        $ScreenHeight = $ScreenHeight + $CurrentDisplayHeight
+    }
+}
+
+# Code only works with a Single Monitor..
+# $ScreenWidth = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenWidth
+# $ScreenHeight = (Get-WmiObject -Class Win32_DesktopMonitor).ScreenHeight
+
 $RESOLUTION = "$ScreenWidth x $ScreenHeight"
 
 # Clear Screen before displaying information
